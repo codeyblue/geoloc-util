@@ -4,12 +4,13 @@
   "description": "Command-line utility using OpenWeather API to fetch geocoding using city, state combination or zip code.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Kyla Kolb",
   "license": "ISC",
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "jest": "^29.7.0"
   },
   "bin": {
     "geoloc-util": "./bin/index.js"
