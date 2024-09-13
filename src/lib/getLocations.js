@@ -15,8 +15,12 @@ async function getLocations(locations, API_KEY) {
     return await getLocationByCity(city, API_KEY);
   })
 
+  const zipPromises = zipcodes.map(async zipcode => {
+    return await getLocationByZip(zipcode, API_KEY);
+  });
 
-  const results = await Promise.all(cityPromises);
+
+  const results = await Promise.all(cityPromises.concat(zipPromises));
   return results;
 }
 
@@ -37,5 +41,22 @@ async function getLocationByCity(cityState, API_KEY) {
       return {error: error.message, city, state};
     });
 }
+
+async function getLocationByZip(zipcode, API_KEY) {
+  return await fetch(`${baseUrl}/zip?zip=${zipcode},US&appid=${API_KEY}`)
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      if (data.length === 0) {
+        return {error: `No location found for ${zipcode}`, zipcode};
+      }
+
+      return (({name, lat, lon, country}) => ({name, lat, lon, country}))(data);
+    })
+    .catch(error => {
+      return {error: error.message, zipcode};
+    });
+  }
 
 export default getLocations;
