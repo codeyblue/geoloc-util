@@ -4,7 +4,7 @@
     describe('Valid Inputs', () => {
       it('returns an object of the locations', async () => {
         const result = await cli(['Baltimore, MD', '33709', 'x']);
-        const expected = `Options:{locations:[{type:'city',location:'Baltimore,MD'},{type:'zipcode',location:'33709'},{type:'invalid',location:'x'}]}`;
+        const expected = `[{name:'Baltimore',lat:39.2908816,lon:-76.610759,country:'US',state:'Maryland'},{name:'PinellasCounty',lat:27.8201,lon:-82.7308,country:'US'}]`;
         expect(result.stdout.replace(/[ \t\n\r]/gm, '')).toBe(expected);
       })
       it('it fetches data with a valid "city, state" format', () => {});
