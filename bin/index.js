@@ -27,4 +27,5 @@ if (!API_KEY) {
   throw new Error('Missing API_KEY. Set it as an environment variable, in the .env file, or pass it in using -k.');
 }
 
-console.log(await getLocations(program.opts().locations, API_KEY));
+const locations = await getLocations(program.opts().locations, API_KEY);
+Parser.outputLocationData(locations);
