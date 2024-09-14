@@ -4,7 +4,7 @@ import createProgram from '../src/utils/cli.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Parser from '../src/utils/parser.js';
+import Parser from '../src/utils/Parser.js';
 import Locations from '../src/lib/Locations.js';
 
 const program = createProgram();
