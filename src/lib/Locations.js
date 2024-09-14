@@ -7,31 +7,33 @@ function filterType(locations, type) {
   return locations.filter(l => l.type === type);
 }
 
-async function getLocations(locations, API_KEY) {
-  let cities = filterType(locations, 'city');
-  let zipcodes = filterType(locations, 'zipcode');
-  const invalids = filterType(locations, 'invalid');
+const Locations = {
+  async getLocations(locations, API_KEY) {
+    let cities = filterType(locations, 'city');
+    let zipcodes = filterType(locations, 'zipcode');
+    const invalids = filterType(locations, 'invalid');
 
-  const cityPromises = cities.map(async city => {
-    city.data = await getLocationByCity(city.location, API_KEY);
-    return city;
-  })
+    const cityPromises = cities.map(async city => {
+      city.data = await getLocationByCity(city.location, API_KEY);
+      return city;
+    })
 
-  const zipPromises = zipcodes.map(async zipcode => {
-    zipcode.data = await getLocationByZip(zipcode.location, API_KEY);
-    return zipcode;
-  });
+    const zipPromises = zipcodes.map(async zipcode => {
+      zipcode.data = await getLocationByZip(zipcode.location, API_KEY);
+      return zipcode;
+    });
 
-  cities = await Promise.all(cityPromises);
-  zipcodes = await Promise.all(zipPromises);
+    cities = await Promise.all(cityPromises);
+    zipcodes = await Promise.all(zipPromises);
 
-  const results = {
-    cities: cities.filter(city => !city.data.error),
-    zipcodes: zipcodes.filter(zipcode => !zipcode.data.error),
-    errors: invalids.concat(cities.filter(city => city.data.error),zipcodes.filter(zipcode => zipcode.data.error))
+    const results = {
+      cities: cities.filter(city => !city.data.error),
+      zipcodes: zipcodes.filter(zipcode => !zipcode.data.error),
+      errors: invalids.concat(cities.filter(city => city.data.error),zipcodes.filter(zipcode => zipcode.data.error))
+    }
+    
+    return results;
   }
-  
-  return results;
 }
 
 async function getLocationByCity(cityState, API_KEY) {
@@ -50,7 +52,7 @@ async function getLocationByCity(cityState, API_KEY) {
     .catch(error => {
       return {error: error.message};
     });
-}
+};
 
 async function getLocationByZip(zipcode, API_KEY) {
   return await fetch(`${baseUrl}/zip?zip=${zipcode},US&appid=${API_KEY}`)
@@ -67,6 +69,6 @@ async function getLocationByZip(zipcode, API_KEY) {
     .catch(error => {
       return {error: error.message};
     });
-  }
+}
 
-export default getLocations;
+export default Locations;

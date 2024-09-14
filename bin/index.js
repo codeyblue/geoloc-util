@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import Parser from '../src/utils/parser.js';
-import getLocations from '../src/lib/getLocations.js';
+import Locations from '../src/lib/Locations.js';
 
 program
   .version('1.0.0')
@@ -27,5 +27,5 @@ if (!API_KEY) {
   throw new Error('Missing API_KEY. Set it as an environment variable, in the .env file, or pass it in using -k.');
 }
 
-const locations = await getLocations(program.opts().locations, API_KEY);
+const locations = await Locations.getLocations(program.opts().locations, API_KEY);
 Parser.outputLocationData(locations);
