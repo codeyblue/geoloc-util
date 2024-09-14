@@ -37,7 +37,7 @@ describe('Unit Tests', () => {
         const result = await cli({locations: [], key: ['fakeApiKey']});
         
         expect(result.code).toBe(1);
-        expect(result.stderr).toEqual(`error: required option '-l, --locations <locations...>' not specified\n`);
+        expect(result.stderr).toContain(`Error: Locations cannot be empty.`);
       });
 
       it('throws an error when no API key is provided to the program or environment', () => {});

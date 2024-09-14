@@ -11,8 +11,11 @@ const program = createProgram();
 
 program.parse(process.argv);
 
-const API_KEY = program.opts().key ? program.opts().key : process.env.API_KEY;
+if (program.opts().locations.length <= 0 || (program.opts().locations.length == 1 && program.opts().locations[0] === '')) {
+  throw Error('Locations cannot be empty.');
+}
 
+const API_KEY = program.opts().key ? program.opts().key : process.env.API_KEY;
 if (!API_KEY) {
   throw Error('Missing API_KEY. Set it as an environment variable, in the .env file, or pass it in using -k.');
 }
