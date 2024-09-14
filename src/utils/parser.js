@@ -32,7 +32,7 @@ const Parser = {
       console.error(`error: API Errors\n\t${apiErrors}\n`);
     }
 
-    console.log(cities.length <= 0 && zipcodes.length <= 0 ? 'No output' :
+    console.log(cities.length <= 0 && zipcodes.length <= 0 ? 'No locations to output' :
       (cities.length > 0 ? `--- Cities ---\n ${cities}\n\n` : '') +
       (zipcodes.length > 0 ? `--- ZipCodes ---\n ${zipcodes}\n\n` : ''));
   }

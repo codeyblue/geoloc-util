@@ -60,8 +60,12 @@ async function getLocationByZip(zipcode, API_KEY) {
       return response.json();
     })
     .then(data => {
-      if (data.length === 0) {
-        return {error: `No location found for ${zipcode}`};
+      if(data.message) {
+        if (data.message === 'not found') {
+          return {error: `No location found for ${zipcode}`}
+        } else {
+          return {error: data.message}
+        }
       }
 
       return (({name, lat, lon, country}) => ({name, lat, lon, country}))(data);

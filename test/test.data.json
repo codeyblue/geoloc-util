@@ -1,0 +1,47 @@
+{
+  "validPlaces": {
+    "cities": [{
+        "input": "Bat Cave, NC",
+        "expected": "BatCave,NCName:BatCaveLatitude:35.4515074Longitude:-82.2870588Country:USState:NorthCarolina"
+      }, {
+        "input": "Utqiaġvik, AK",
+        "expected": "Utqiaġvik,AKName:UtqiaġvikLatitude:71.2905556Longitude:-156.788611Country:USState:Alaska"
+      }, {
+        "input": "Hāmoa, HI",
+        "expected": "Hāmoa,HIName:HamoaLatitude:20.7201935Longitude:-155.987577Country:USState:Hawaii"
+      }, {
+        "input": "martha's vineyard, ma",
+        "expected": "martha'svineyard,maName:Martha'sVineyardLatitude:41.39204545Longitude:-70.62081381546194Country:USState:Massachusetts"
+      }, {
+        "input": "winston-Salem, nC",
+        "expected": "winston-Salem,nCName:Winston-SalemLatitude:36.0998131Longitude:-80.2440518Country:USState:NorthCarolina"
+      }, {
+        "input": "St. Louis, Mi",
+        "expected": "St.Louis,MiName:SaintLouisLatitude:38.6319657Longitude:-90.2428756Country:USState:Missouri"
+    }],
+    "zipcodes": [{
+      "input": "54880",
+      "expected": "54880Name:CityofSuperiorLatitude:46.7016Longitude:-92.0912Country:US"
+      }, {
+        "input": "44146",
+        "expected": "44146Name:BedfordLatitude:41.3921Longitude:-81.5232Country:US"
+    }]
+  },
+  "invalidFormats": [{
+      "input": "invalid format",
+      "error": "error:Invalidinputformatsinvalidformat"
+    }, {
+      "input": "-12345",
+      "error": "error:Invalidinputformats-12345"
+    }, {
+      "input": "I'm, VA",
+      "error": "error:APIErrorsI'm,VA-NolocationfoundforI'm,VA"
+  }],
+  "invalidPlaces": [{
+      "input": "x, yy",
+      "error": "error:APIErrorsx,yy-Nolocationfoundforx,yy"
+    }, {
+      "input": "11111",
+      "error": "error:APIErrors11111-Nolocationfoundfor11111"
+  }]
+}
