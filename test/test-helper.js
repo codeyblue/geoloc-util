@@ -1,5 +1,4 @@
-const path = require('path');
-const exec = require('child_process').exec;
+import { exec } from 'child_process';
 
 // Running the CLI using the node method in case the utility is not installed globally
 function cli(locations) {
@@ -14,4 +13,4 @@ function cli(locations) {
   })
 })}
 
-module.exports = { cli };
+export default cli;

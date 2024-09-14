@@ -1,4 +1,4 @@
-  const {cli} = require('./test-helper.test.js');
+import cli from "./test-helper.js";
 
   describe('Unit Tests', () => {
     describe('Valid Inputs', () => {
