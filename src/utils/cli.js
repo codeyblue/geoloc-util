@@ -1,6 +1,7 @@
-import { program } from 'commander';
+import { Command } from 'commander';
 
 function createProgram() {
+  const program = new Command();
   program
     .version('1.0.0')
     .description('Fetch geolocation data for a list of locations')
