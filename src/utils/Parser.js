@@ -1,5 +1,9 @@
 const Parser = {
   parseLocation (location) {
+    if (typeof location !== 'string') {
+      throw new Error('Passed in location is not of type string');
+    }
+
     const zipRegex = /^\d{5}$/;
     const cityStateRegex = /([A-z]+), ([A-z]{2})$/;
     const type = zipRegex.test(location) ? 'zipcode' : cityStateRegex.test(location) ? 'city' : 'invalid';
@@ -7,22 +11,22 @@ const Parser = {
   },
 
   outputLocationData(locations) {
-    const invalidErrors = locations.errors.filter(error => error.type === 'invalid').map(error => error.location).join('\n\t');
-    const apiErrors = locations.errors.filter(error => error.type !== 'invalid').map(
-      error => `${error.location} - ${error.data.error}`).join('\n\t');
+    const invalidErrors = locations.errors ? locations.errors.filter(error => error.type === 'invalid').map(error => error.location).join('\n\t') : undefined;
+    const apiErrors = locations.errors ? locations.errors.filter(error => error.type !== 'invalid').map(
+      error => `${error.location} - ${error.data.error}`).join('\n\t') : undefined;
 
-    const cities = locations.cities.map(city => `${city.location}
+    const cities = locations.cities ? locations.cities.map(city => `${city.location}
       Name: ${city.data.name}
       Latitude: ${city.data.lat}
       Longitude: ${city.data.lon}
       Country: ${city.data.country}
-      State: ${city.data.state}`).join('\n\n');
+      State: ${city.data.state}`).join('\n\n') : undefined;
 
-    const zipcodes = locations.zipcodes.map(zipcode => `${zipcode.location}
+    const zipcodes = locations.zipcodes ? locations.zipcodes.map(zipcode => `${zipcode.location}
       Name: ${zipcode.data.name}
       Latitude: ${zipcode.data.lat}
       Longitude: ${zipcode.data.lon}
-      Country: ${zipcode.data.country}`).join('\n\n');
+      Country: ${zipcode.data.country}`).join('\n\n') : undefined;
 
     if(invalidErrors) {
       console.error(`error: Invalid input formats\n\t${invalidErrors}\n`);
@@ -32,9 +36,9 @@ const Parser = {
       console.error(`error: API Errors\n\t${apiErrors}\n`);
     }
 
-    console.log(cities.length <= 0 && zipcodes.length <= 0 ? 'No locations to output' :
-      (cities.length > 0 ? `--- Cities ---\n ${cities}\n\n` : '') +
-      (zipcodes.length > 0 ? `--- ZipCodes ---\n ${zipcodes}\n\n` : ''));
+    console.log(!cities && !zipcodes ? 'No locations to output' :
+      (cities ? `--- Cities ---\n${cities}\n\n` : '') +
+      (zipcodes ? `--- ZipCodes ---\n${zipcodes}\n\n` : ''));
   }
 }
 

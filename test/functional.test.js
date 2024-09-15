@@ -4,13 +4,20 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+const outputPrefixes = {
+  cities: '--- Cities ---',
+  zipcodes: '--- ZipCodes ---',
+  apiErrors: 'error: API Errors',
+  invalidErrors: 'error: Invalid input formats'
+}
+
 describe('Functional Tests', () => {
   describe('Valid Inputs', () => {
     data.validPlaces.cities.forEach(city => {
       it(`it fetches data with a valid "city, state" format: ${city.input}`, async () => {
         const result = await cli({locations: [city.input]});
         
-        expect(formatOutput(result.stdout)).toEqual(`---Cities---${city.expected}`);
+        expect(result.stdout).toEqual(`${outputPrefixes.cities}\n${city.expected}\n`);
       });
     });
 
@@ -18,18 +25,18 @@ describe('Functional Tests', () => {
       const zipcode = data.validPlaces.zipcodes[0];
       const result = await cli({locations: [zipcode.input]});
       
-      expect(formatOutput(result.stdout)).toEqual(`---ZipCodes---${zipcode.expected}`);
+      expect(result.stdout).toEqual(`${outputPrefixes.zipcodes}\n${zipcode.expected}\n`);
     });
 
     it('it fetches data with multiple valid "city, state" and "zipcode" formats', async () => {
       const zipcodes = data.validPlaces.zipcodes.map(zipcode => zipcode.input);
       const cities = data.validPlaces.cities.map(city => city.input);
-      const expectedZipcodes = '---ZipCodes---' + data.validPlaces.zipcodes.map(zipcode => zipcode.expected).join('');
-      const expectedCities = '---Cities---' + data.validPlaces.cities.map(city => city.expected).join('');
+      const expectedZipcodes = `${outputPrefixes.zipcodes}\n${data.validPlaces.zipcodes.map(zipcode => zipcode.expected).join('')}`;
+      const expectedCities = `${outputPrefixes.cities}\n${data.validPlaces.cities.map(city => city.expected).join('')}`;
 
       const result = await cli({locations: zipcodes.concat(cities)});
 
-      expect(formatOutput(result.stdout)).toEqual(expectedCities.concat(expectedZipcodes));
+      expect(result.stdout).toEqual(`${expectedCities}${expectedZipcodes}\n`);
     });
   });
 
@@ -78,15 +85,16 @@ describe('Functional Tests', () => {
         expect(API_KEY).not.toBe(undefined);
         const result = await cli({locations: [data.validPlaces.zipcodes[0].input], key: [API_KEY]});
 
-        expect(formatOutput(result.stdout)).toEqual(`---ZipCodes---${data.validPlaces.zipcodes[0].expected}`);
+        expect(result.stdout).toEqual(`${outputPrefixes.zipcodes}\n${data.validPlaces.zipcodes[0].expected}\n`);
       });
 
       it('it throws an error if the API returns an error', async () => {
-        const result = await cli({locations: [data.validPlaces.zipcodes[0].input], key: ['fakeApiKey']});
+        const location = data.validPlaces.zipcodes[0].input;
+        const result = await cli({locations: [location], key: ['fakeApiKey']});
 
         expect(result.code).toBe(0);
-        expect(formatOutput(result.stderr)).toEqual(`error:APIErrors54880-InvalidAPIkey.Pleaseseehttps://openweathermap.org/faq#error401formoreinfo.`);
-        expect(formatOutput(result.stdout)).toEqual('Nolocationstooutput');
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${location} - Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.\n\n`);
+        expect(result.stdout).toEqual('No locations to output\n');
       });
     });
 
@@ -95,18 +103,18 @@ describe('Functional Tests', () => {
         const result = await cli({locations: [invalid.input]});
         
         expect(result.code).toBe(0);
-        expect(formatOutput(result.stderr)).toEqual(invalid.error);
-        expect(formatOutput(result.stdout)).toEqual('Nolocationstooutput');
+        expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${invalid.input}\n\n`);
+        expect(result.stdout).toEqual('No locations to output\n');
       });
     });
 
     data.invalidPlaces.forEach(invalid => {
-      it.only(`it throws an error if no location can be found: ${invalid.input}`, async () => {
+      it(`it throws an error if no location can be found: ${invalid.input}`, async () => {
         const result = await cli({locations: [invalid.input]});
         
         expect(result.code).toBe(0);
-        expect(formatOutput(result.stderr)).toEqual(invalid.error);
-        expect(formatOutput(result.stdout)).toEqual('Nolocationstooutput');
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid.input} - ${invalid.error}\n\n`);
+        expect(result.stdout).toEqual('No locations to output\n');
       });
     });
 
@@ -128,15 +136,11 @@ describe('Functional Tests', () => {
       const result = await cli({locations: input});
 
       expect(result.code).toBe(0);
-      expect(formatOutput(result.stderr)).toEqual(`${d.invalidFormat.error}${d.invalidPlace.error}`);
-      expect(formatOutput(result.stdout)).toEqual(`---Cities---${d.validCity.expected}---ZipCodes---${d.validZip.expected}`);
+      expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${d.invalidFormat.input}\n\n${outputPrefixes.apiErrors}\n\t${d.invalidPlace.input} - ${d.invalidPlace.error}\n\n`);
+      expect(result.stdout).toEqual(`${outputPrefixes.cities}\n${d.validCity.expected}${outputPrefixes.zipcodes}\n${d.validZip.expected}\n`);
     });
   });
 });
-
-function formatOutput(output) {
-  return output.replace(/[ \t\n\r]/gm, '');
-}
 
 function getEnvPath() {
   const __filename = fileURLToPath(import.meta.url);
