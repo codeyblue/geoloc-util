@@ -1,5 +1,5 @@
-import cli from "./test-helper.js";
-import data from './test.data.json';
+import {cli} from "./helpers/test-helper.js";
+import data from './helpers/test.data.json';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -160,3 +160,7 @@ function getEnvPath() {
   const pathToEnv = path.resolve(__dirname, '../.env');
   return pathToEnv;
 }
+
+// calls parselocations once w/ args -> index.js
+// calls getlocations once w/ args
+// calls outputlocations once w/args

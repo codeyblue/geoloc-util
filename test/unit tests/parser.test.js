@@ -1,5 +1,5 @@
 import Parser from "../../src/utils/Parser.js";
-import data from '../test.data.json';
+import data from '../helpers/test.data.json';
 import {expect, jest, test} from '@jest/globals';
 
 beforeEach(() => {

@@ -1,7 +1,7 @@
 import {expect, jest, test} from '@jest/globals';
 
 import Locations from '../../src/lib/Locations';
-import data from '../test.data.json';
+import data from '../helpers/test.data.json';
 
 describe('Locations.js unit tests', () => {
   const API_KEY = 'test-api-key';
