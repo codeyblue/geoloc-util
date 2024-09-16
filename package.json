@@ -4,7 +4,8 @@
   "description": "Command-line utility using OpenWeather API to fetch geocoding using city, state combination or zip code.",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
+    "coverage": "node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
   },
   "author": "Kyla Kolb",
   "license": "ISC",
