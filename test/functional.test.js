@@ -108,8 +108,18 @@ describe('Functional Tests', () => {
       });
     });
 
-    data.invalidPlaces.forEach(invalid => {
-      it(`it throws an error if no location can be found: ${invalid.input}`, async () => {
+    data.invalidPlaces.cities.forEach(invalid => {
+      it(`it throws an error if no location can be found for a city: ${invalid.input}`, async () => {
+        const result = await cli({locations: [invalid.input]});
+        
+        expect(result.code).toBe(0);
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid.input} - ${invalid.error}\n\n`);
+        expect(result.stdout).toEqual('No locations to output\n');
+      });
+    });
+
+    data.invalidPlaces.zipcodes.forEach(invalid => {
+      it(`it throws an error if no location can be found for a zipcode: ${invalid.input}`, async () => {
         const result = await cli({locations: [invalid.input]});
         
         expect(result.code).toBe(0);
@@ -123,20 +133,22 @@ describe('Functional Tests', () => {
         validZip: data.validPlaces.zipcodes[0],
         validCity: data.validPlaces.cities[0],
         invalidFormat: data.invalidFormats[0],
-        invalidPlace: data.invalidPlaces[0]
+        invalidCity: data.invalidPlaces.cities[0],
+        invalidZip: data.invalidPlaces.zipcodes[0],
       };
 
       const input = [
         d.validZip.input,
         d.validCity.input,
         d.invalidFormat.input,
-        d.invalidPlace.input
+        d.invalidCity.input,
+        d.invalidZip.input
       ];
 
       const result = await cli({locations: input});
 
       expect(result.code).toBe(0);
-      expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${d.invalidFormat.input}\n\n${outputPrefixes.apiErrors}\n\t${d.invalidPlace.input} - ${d.invalidPlace.error}\n\n`);
+      expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${d.invalidFormat.input}\n\n${outputPrefixes.apiErrors}\n\t${d.invalidCity.input} - ${d.invalidCity.error}\n\t${d.invalidZip.input} - ${d.invalidZip.error}\n\n`);
       expect(result.stdout).toEqual(`${outputPrefixes.cities}\n${d.validCity.expected}${outputPrefixes.zipcodes}\n${d.validZip.expected}\n`);
     });
   });

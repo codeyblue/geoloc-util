@@ -4,7 +4,7 @@ const baseUrl = 'http://api.openweathermap.org/geo/1.0';
 const limit = 1;
 
 function filterType(locations, type) {
-  return locations.filter(l => l.type === type);
+  return locations.filter(l => l.type && l.type === type);
 }
 
 const Locations = {
@@ -14,12 +14,12 @@ const Locations = {
     const invalids = filterType(locations, 'invalid');
 
     const cityPromises = cities.map(async city => {
-      city.data = await getLocationByCity(city.location, API_KEY);
+      city.data = await this.getLocationByCity(city.location, API_KEY);
       return city;
     })
 
     const zipPromises = zipcodes.map(async zipcode => {
-      zipcode.data = await getLocationByZip(zipcode.location, API_KEY);
+      zipcode.data = await this.getLocationByZip(zipcode.location, API_KEY);
       return zipcode;
     });
 
@@ -33,11 +33,14 @@ const Locations = {
     }
     
     return results;
-  }
-}
+  },
 
-async function getLocationByCity(cityState, API_KEY) {
-  const [city, state] = cityState.split(', ');
+  async getLocationByCity(cityState, API_KEY) {
+    const [city, state] = cityState.split(', ');
+    if (!(city && state)) {
+      return { error: 'Format incorrect, city and state are both required' };
+    }
+
   return await fetch(`${baseUrl}/direct?q=${city},${state},US&limit=${limit}&appid=${API_KEY}`)
     .then(response => {
       return response.json();
@@ -52,27 +55,28 @@ async function getLocationByCity(cityState, API_KEY) {
     .catch(error => {
       return {error: error.message};
     });
-};
+  },
 
-async function getLocationByZip(zipcode, API_KEY) {
-  return await fetch(`${baseUrl}/zip?zip=${zipcode},US&appid=${API_KEY}`)
-    .then(response => {
-      return response.json();
-    })
-    .then(data => {
-      if(data.message) {
-        if (data.message === 'not found') {
-          return {error: `No location found for ${zipcode}`}
-        } else {
-          return {error: data.message}
+  async getLocationByZip(zipcode, API_KEY) {
+    return await fetch(`${baseUrl}/zip?zip=${zipcode},US&appid=${API_KEY}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        if(data.message) {
+          if (data.message === 'not found') {
+            return {error: `No location found for ${zipcode}`}
+          } else {
+            return {error: data.message}
+          }
         }
-      }
 
-      return (({name, lat, lon, country}) => ({name, lat, lon, country}))(data);
-    })
-    .catch(error => {
-      return {error: error.message};
-    });
+        return (({name, lat, lon, country}) => ({name, lat, lon, country}))(data);
+      })
+      .catch(error => {
+        return {error: error.message};
+      });
+  }
 }
 
 export default Locations;

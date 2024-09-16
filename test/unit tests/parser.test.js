@@ -2,12 +2,13 @@ import Parser from "../../src/utils/Parser.js";
 import data from '../test.data.json';
 import {expect, jest, test} from '@jest/globals';
 
-console.error = jest.fn();
-console.log = jest.fn();
-
 beforeEach(() => {
-  console.error.mockClear();
-  console.log.mockClear();
+  console.error = jest.fn();
+  console.log = jest.fn();
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 describe('Parser.js unit tests', () => {
@@ -59,9 +60,9 @@ describe('Parser.js unit tests', () => {
       expect(console.error).toHaveBeenCalledWith(`error: Invalid input formats\n\t${locations[0]}\n\t${locations[1]}\n`);
     });
 
-    it('it properly outputs error data for a single api error', () => {
+    it('it properly outputs error data for a single city api error', () => {
       const error = 'This is an API error message';
-      const location = data.invalidPlaces[0].input;
+      const location = data.invalidPlaces.cities[0].input;
       const input = { errors: [{ type: 'api', location, data: { error }}]};
       Parser.outputLocationData(input);
 
@@ -69,13 +70,40 @@ describe('Parser.js unit tests', () => {
       expect(console.error).toHaveBeenCalledWith(`error: API Errors\n\t${location} - ${error}\n`);
     });
 
-    it('it properly outputs error data for multiple api errors', () => {
-      const locations = [data.invalidPlaces[0], data.invalidPlaces[1]];
+    it('it properly outputs error data for multiple city api errors', () => {
+      const locations = data.invalidPlaces.cities;
       const error = 'This is an API error message';
-      const input = { errors: [
-        { type: 'api', location: locations[0], data: { error }},
-        { type: 'api', location: locations[1], data: { error }}]
-      };
+      const input = { errors: locations.map(location => ({type: 'api', location, data: {error}}))};
+      Parser.outputLocationData(input);
+
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(`error: API Errors\n\t${locations[0]} - ${error}\n\t${locations[1]} - ${error}\n`);
+    });
+
+    it('it properly outputs error data for a single zipcode api error', () => {
+      const error = 'This is an API error message';
+      const location = data.invalidPlaces.zipcodes[0].input;
+      const input = { errors: [{ type: 'api', location, data: { error }}]};
+      Parser.outputLocationData(input);
+
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(`error: API Errors\n\t${location} - ${error}\n`);
+    });
+
+    it('it properly outputs error data for multiple zipcode api errors', () => {
+      const locations = data.invalidPlaces.zipcodes;
+      const error = 'This is an API error message';
+      const input = { errors: locations.map(location => ({type: 'api', location, data: {error}}))};
+      Parser.outputLocationData(input);
+
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(`error: API Errors\n\t${locations[0]} - ${error}\n\t${locations[1]} - ${error}\n`);
+    });
+
+    it('it properly outputs error data for a city and a zipcode api errors', () => {
+      const locations = [data.invalidPlaces.cities[0], data.invalidPlaces.zipcodes[0]];
+      const error = 'This is an API error message';
+      const input = { errors: locations.map(location => ({type: 'api', location, data: {error}}))};
       Parser.outputLocationData(input);
 
       expect(console.error).toHaveBeenCalledTimes(1);
@@ -126,7 +154,8 @@ describe('Parser.js unit tests', () => {
 
     it('it properly outputs location data for multiple types', () => {
       const invalidInput = data.invalidFormats[0];
-      const invalidPlace = data.invalidPlaces[0];
+      const invalidCity = data.invalidPlaces.cities[0];
+      const invalidZip = data.invalidPlaces.zipcodes[0];
       const zipcode = data.validPlaces.zipcodes[0];
       const city = data.validPlaces.cities[0];
       const input = {
@@ -134,13 +163,14 @@ describe('Parser.js unit tests', () => {
         cities: [{ type: 'city', location: city.input, data: city.outputObject}],
         errors: [
           { type: 'invalid', location: invalidInput.input },
-          { type: 'api', location: invalidPlace.input, data: { error: 'This is an API Error'} }]
+          { type: 'api', location: invalidCity.input, data: { error: 'This is an API Error'} },
+          { type: 'api', location: invalidZip.input, data: { error: 'This is an API Error'} }]
       };
       const outputStrings = {
         zipcode: `--- ZipCodes ---\n${zipcode.expected}`,
         city: `--- Cities ---\n${city.expected}`,
         invalidError: `error: Invalid input formats\n\t${invalidInput.input}\n`,
-        apiError: `error: API Errors\n\t${invalidPlace.input} - This is an API Error\n`
+        apiError: `error: API Errors\n\t${invalidCity.input} - This is an API Error\n\t${invalidZip.input} - This is an API Error\n`
       };
 
       Parser.outputLocationData(input);

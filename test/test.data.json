@@ -40,14 +40,20 @@
     }, {
       "input": "-12345"
     }],
-  "invalidPlaces": [{
-      "input": "x, yy",
-      "error": "No location found for x, yy"
-    }, {
-      "input": "11111",
-      "error": "No location found for 11111"
-    }, {
-      "input": "I'm, VA",
-      "error": "No location found for I'm, VA"
-  }]
+  "invalidPlaces": {
+    "cities": [{
+        "input": "x, yy",
+        "error": "No location found for x, yy"
+      }, {
+        "input": "I'm, VA",
+        "error": "No location found for I'm, VA"
+    }],
+    "zipcodes": [{
+        "input": "11111",
+        "error": "No location found for 11111"
+      }, {
+        "input": "00000",
+        "error": "No location found for 00000"
+    }]
+  }
 }
