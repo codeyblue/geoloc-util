@@ -3,36 +3,36 @@
     "cities": [{
         "input": "Bat Cave, NC",
         "expected": "Bat Cave, NC\n      Name: Bat Cave\n      Latitude: 35.4515074\n      Longitude: -82.2870588\n      Country: US\n      State: North Carolina\n\n",
-        "outputObject": { "name": "Bat Cave", "lat": "35.4515074", "lon": "-82.2870588", "country": "US", "state": "North Carolina" }
+        "outputObject": { "name": "Bat Cave", "lat": 35.4515074, "lon": -82.2870588, "country": "US", "state": "North Carolina" }
       }, {
         "input": "Utqiaġvik, AK",
         "expected":  "Utqiaġvik, AK\n      Name: Utqiaġvik\n      Latitude: 71.2905556\n      Longitude: -156.788611\n      Country: US\n      State: Alaska\n\n",
-        "outputObject":  {"name": "Utqiaġvik", "lat": "71.2905556", "lon": "-156.788611", "country": "US", "state": "Alaska"}
+        "outputObject":  {"name": "Utqiaġvik", "lat": 71.2905556, "lon": -156.788611, "country": "US", "state": "Alaska"}
       }, {
         "input": "Hāmoa, HI",
         "expected": "Hāmoa, HI\n      Name: Hamoa\n      Latitude: 20.7201935\n      Longitude: -155.987577\n      Country: US\n      State: Hawaii\n\n",
-        "outputObject": {"name": "Hamoa", "lat": "20.7201935", "longitude": "-155.987577", "country": "US", "state": "Hawaii"}
+        "outputObject": {"name": "Hamoa", "lat": 20.7201935, "longitude": -155.987577, "country": "US", "state": "Hawaii"}
       }, {
         "input": "martha's vineyard, ma",
         "expected": "martha's vineyard, ma\n      Name: Martha's Vineyard\n      Latitude: 41.39204545\n      Longitude: -70.62081381546194\n      Country: US\n      State: Massachusetts\n\n",
-        "outputObject": {"name": "Martha's Vineyard", "lat": "41.39204545", "lon": "-70.62081381546194", "country": "US", "state": "Massachusetts"}
+        "outputObject": {"name": "Martha's Vineyard", "lat": 41.39204545, "lon": -70.62081381546194, "country": "US", "state": "Massachusetts"}
       }, {
         "input": "winston-Salem, nC",
         "expected": "winston-Salem, nC\n      Name: Winston-Salem\n      Latitude: 36.0998131\n      Longitude: -80.2440518\n      Country: US\n      State: North Carolina\n\n",
-        "outputObject": {"name": "Winston-Salem", "latitude": "36.0998131", "longitude": "-80.2440518", "country": "US", "state": "NorthCarolina"}
+        "outputObject": {"name": "Winston-Salem", "latitude": 36.0998131, "longitude": -80.2440518, "country": "US", "state": "NorthCarolina"}
       }, {
         "input": "St. Louis, Mi",
         "expected": "St. Louis, Mi\n      Name: Saint Louis\n      Latitude: 38.6319657\n      Longitude: -90.2428756\n      Country: US\n      State: Missouri\n\n",
-        "outputObject": {"name": "Saint Louis", "lat": "38.6319657", "lon": "-90.2428756", "country": "US", "state": "Missouri"}
+        "outputObject": {"name": "Saint Louis", "lat": 38.6319657, "lon": -90.2428756, "country": "US", "state": "Missouri"}
     }],
     "zipcodes": [{
       "input": "54880",
       "expected": "54880\n      Name: City of Superior\n      Latitude: 46.7016\n      Longitude: -92.0912\n      Country: US\n\n",
-      "outputObject": { "name": "City of Superior", "lat": "46.7016", "lon": "-92.0912", "country": "US" }
+      "outputObject": { "name": "City of Superior", "lat": 46.7016, "lon": -92.0912, "country": "US" }
       }, {
         "input": "44146",
         "expected": "44146\n      Name: Bedford\n      Latitude: 41.3921\n      Longitude: -81.5232\n      Country: US\n\n",
-        "outputObject": {"name": "Bedford", "lat": "41.3921", "lon": "-81.5232", "country": "US"}
+        "outputObject": {"name": "Bedford", "lat": 41.3921, "lon": -81.5232, "country": "US"}
     }]
   },
   "invalidFormats": [{
