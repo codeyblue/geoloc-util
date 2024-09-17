@@ -48,6 +48,8 @@ const Locations = {
     .then(data => {
       if (data.length === 0) {
         return {error: `No location found for ${city}, ${state}`};
+      } else if (data.message) {
+        return {error: data.message};
       }
 
       return (({name, lat, lon, country, state}) => ({name, lat, lon, country, state}))(data[0]);

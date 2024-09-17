@@ -1,0 +1,9 @@
+{
+  "apiErrors": "error: API Errors",
+  "cities": "--- Cities ---",
+  "invalidErrors": "error: Invalid input formats",
+  "invalidKey": "Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.",
+  "noLocations": "No locations to output",
+  "unknownLocation": "No location found for",
+  "zipcodes": "--- ZipCodes ---"
+}

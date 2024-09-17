@@ -1,18 +1,23 @@
-import {cli} from "./helpers/test-helper.js";
-import data from './helpers/test.data.json';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const outputPrefixes = {
-  cities: '--- Cities ---',
-  zipcodes: '--- ZipCodes ---',
-  apiErrors: 'error: API Errors',
-  invalidErrors: 'error: Invalid input formats'
-}
+import {cli} from "./helpers/test-helper.js";
+import data from './helpers/test.data.json';
+import outputPrefixes from '../src/utils/output-prefixes.json';
 
 describe('Functional Tests', () => {
+  const city = data.validPlaces.cities[0];
+  const invalidCity = data.invalidPlaces.cities[0];
+  const zipcode = data.validPlaces.zipcodes[0];
+  const invalidZipcode = data.invalidPlaces.zipcodes[0];
+  const invalidFormat = data.invalidFormats[0];
+
   describe('Valid Inputs', () => {
+
     data.validPlaces.cities.forEach(city => {
       it(`it fetches data with a valid "city, state" format: ${city.input}`, async () => {
         const result = await cli({locations: [city.input]});
@@ -22,7 +27,6 @@ describe('Functional Tests', () => {
     });
 
     it('it fetches data with a valid "zipcode" format', async () => {
-      const zipcode = data.validPlaces.zipcodes[0];
       const result = await cli({locations: [zipcode.input]});
       
       expect(result.stdout).toEqual(`${outputPrefixes.zipcodes}\n${zipcode.expected}\n`);
@@ -74,7 +78,7 @@ describe('Functional Tests', () => {
       });
 
       it('throws an error when no API key is provided to the program or environment', async () => {
-        const result = await cli({locations: [data.validPlaces.zipcodes[0]]});
+        const result = await cli({locations: ['some place']});
 
         expect(result.code).toBe(1);
         expect(result.stderr).toContain(`Missing API_KEY. Set it as an environment variable, in the .env file, or pass it in using -k.`);
@@ -83,73 +87,66 @@ describe('Functional Tests', () => {
 
       it('it fetches data when passed a valid API key', async () => {
         expect(API_KEY).not.toBe(undefined);
-        const result = await cli({locations: [data.validPlaces.zipcodes[0].input], key: [API_KEY]});
+        const result = await cli({locations: [zipcode.input], key: [API_KEY]});
 
         expect(result.stdout).toEqual(`${outputPrefixes.zipcodes}\n${data.validPlaces.zipcodes[0].expected}\n`);
       });
 
       it('it throws an error if the API returns an error', async () => {
-        const location = data.validPlaces.zipcodes[0].input;
+        const location = zipcode.input;
         const result = await cli({locations: [location], key: ['fakeApiKey']});
 
         expect(result.code).toBe(0);
-        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${location} - Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.\n\n`);
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${location} - ${outputPrefixes.invalidKey}\n\n`);
         expect(result.stdout).toEqual('No locations to output\n');
       });
     });
 
     data.invalidFormats.forEach(invalid => {
-      it(`it throws an error if the input is not the proper format: ${invalid.input}`, async () => {
-        const result = await cli({locations: [invalid.input]});
+      it(`it throws an error if the input is not the proper format: ${invalid}`, async () => {
+        const result = await cli({locations: [invalid]});
         
         expect(result.code).toBe(0);
-        expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${invalid.input}\n\n`);
-        expect(result.stdout).toEqual('No locations to output\n');
+        expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${invalid}\n\n`);
+        expect(result.stdout).toEqual(`${outputPrefixes.noLocations}\n`);
       });
     });
 
     data.invalidPlaces.cities.forEach(invalid => {
-      it(`it throws an error if no location can be found for a city: ${invalid.input}`, async () => {
-        const result = await cli({locations: [invalid.input]});
+      it(`it throws an error if no location can be found for a city: ${invalid}`, async () => {
+        const result = await cli({locations: [invalid]});
         
         expect(result.code).toBe(0);
-        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid.input} - ${invalid.error}\n\n`);
-        expect(result.stdout).toEqual('No locations to output\n');
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid} - ${outputPrefixes.unknownLocation} ${invalid}\n\n`);
+        expect(result.stdout).toEqual(`${outputPrefixes.noLocations}\n`);
       });
     });
 
     data.invalidPlaces.zipcodes.forEach(invalid => {
-      it(`it throws an error if no location can be found for a zipcode: ${invalid.input}`, async () => {
-        const result = await cli({locations: [invalid.input]});
+      it(`it throws an error if no location can be found for a zipcode: ${invalid}`, async () => {
+        const result = await cli({locations: [invalid]});
         
         expect(result.code).toBe(0);
-        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid.input} - ${invalid.error}\n\n`);
-        expect(result.stdout).toEqual('No locations to output\n');
+        expect(result.stderr).toEqual(`${outputPrefixes.apiErrors}\n\t${invalid} - ${outputPrefixes.unknownLocation} ${invalid}\n\n`);
+        expect(result.stdout).toEqual(`${outputPrefixes.noLocations}\n`);
       });
     });
 
     it('it returns location data for valid inputs along with error data for invalid inputs', async () => {
-      const d = {
-        validZip: data.validPlaces.zipcodes[0],
-        validCity: data.validPlaces.cities[0],
-        invalidFormat: data.invalidFormats[0],
-        invalidCity: data.invalidPlaces.cities[0],
-        invalidZip: data.invalidPlaces.zipcodes[0],
-      };
 
       const input = [
-        d.validZip.input,
-        d.validCity.input,
-        d.invalidFormat.input,
-        d.invalidCity.input,
-        d.invalidZip.input
+        zipcode.input,
+        city.input,
+        invalidFormat,
+        invalidCity,
+        invalidZipcode
       ];
 
       const result = await cli({locations: input});
 
       expect(result.code).toBe(0);
-      expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${d.invalidFormat.input}\n\n${outputPrefixes.apiErrors}\n\t${d.invalidCity.input} - ${d.invalidCity.error}\n\t${d.invalidZip.input} - ${d.invalidZip.error}\n\n`);
-      expect(result.stdout).toEqual(`${outputPrefixes.cities}\n${d.validCity.expected}${outputPrefixes.zipcodes}\n${d.validZip.expected}\n`);
+      expect(result.stderr).toEqual(`${outputPrefixes.invalidErrors}\n\t${invalidFormat}\n\n${outputPrefixes.apiErrors}\n\t${invalidCity} - ${outputPrefixes.unknownLocation} ${invalidCity}\n\t${invalidZipcode} - ${outputPrefixes.unknownLocation} ${invalidZipcode}\n\n`);
+      expect(result.stdout).toEqual(`${outputPrefixes.cities}\n${city.expected}${outputPrefixes.zipcodes}\n${zipcode.expected}\n`);
     });
   });
 });
@@ -160,7 +157,3 @@ function getEnvPath() {
   const pathToEnv = path.resolve(__dirname, '../.env');
   return pathToEnv;
 }
-
-// calls parselocations once w/ args -> index.js
-// calls getlocations once w/ args
-// calls outputlocations once w/args

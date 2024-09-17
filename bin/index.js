@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import createProgram from '../src/utils/cli.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Parser from '../src/utils/Parser.js';
+import createProgram from '../src/utils/cli.js';
 import Locations from '../src/lib/Locations.js';
+import Parser from '../src/utils/Parser.js';
 
 const program = createProgram();
 

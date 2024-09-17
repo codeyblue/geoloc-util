@@ -35,25 +35,18 @@
         "outputObject": {"name": "Bedford", "lat": 41.3921, "lon": -81.5232, "country": "US"}
     }]
   },
-  "invalidFormats": [{
-      "input": "invalid format"
-    }, {
-      "input": "-12345"
-    }],
+  "invalidFormats": [
+    "invalid format",
+    "-12345"
+  ],
   "invalidPlaces": {
-    "cities": [{
-        "input": "x, yy",
-        "error": "No location found for x, yy"
-      }, {
-        "input": "I'm, VA",
-        "error": "No location found for I'm, VA"
-    }],
-    "zipcodes": [{
-        "input": "11111",
-        "error": "No location found for 11111"
-      }, {
-        "input": "00000",
-        "error": "No location found for 00000"
-    }]
+    "cities": [
+      "x, yy",
+      "I'm, VA"
+    ],
+    "zipcodes": [
+      "11111",
+      "00000"
+    ]
   }
 }

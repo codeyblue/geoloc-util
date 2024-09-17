@@ -1,20 +1,16 @@
-import {expect, jest, test} from '@jest/globals';
+import {expect, jest} from '@jest/globals';
 
 import Locations from '../../src/lib/Locations';
 import data from '../helpers/test.data.json';
+import outputPrefixes from '../../src/utils/output-prefixes.json';
 
 describe('Locations.js unit tests', () => {
   const API_KEY = 'test-api-key';
   const city = data.validPlaces.cities[0];
-  const city2 = data.validPlaces.cities[1];
   const invalidCity = data.invalidPlaces.cities[0];
-  const invalidCity2 = data.invalidPlaces.cities[1];
   const zipcode = data.validPlaces.zipcodes[0];
-  const zipcode2 = data.validPlaces.zipcodes[1];
   const invalidZipcode = data.invalidPlaces.zipcodes[0];
-  const invalidZipcode2 = data.invalidPlaces.zipcodes[1];
   const invalidFormat = data.invalidFormats[0];
-  const invalidFormat2 = data.invalidFormats[1];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -62,6 +58,7 @@ describe('Locations.js unit tests', () => {
     });
 
     it('it returns an object of city locations', async () => {
+      const city2 = data.validPlaces.cities[1];
       const locations = [
         { type: 'city', location: city.input },
         { type: 'city', location: city2.input }
@@ -108,6 +105,7 @@ describe('Locations.js unit tests', () => {
     });
 
     it('it returns an object of zipcode locations', async () => {
+      const zipcode2 = data.validPlaces.zipcodes[1];
       const locations = [
         { type: 'zipcode', location: zipcode.input },
         { type: 'zipcode', location: zipcode2.input }
@@ -133,11 +131,11 @@ describe('Locations.js unit tests', () => {
       });
     });
 
-    it('it returns an object of a single invalid city location', async () => {
+    it('it returns an object of a single unknown city location', async () => {
       const locations = [
         { type: 'city', location: invalidCity.input }
       ];
-      const error = `No location found for ${invalidCity.input}`;
+      const error = `${outputPrefixes.unknownLocation} ${invalidCity}`;
 
       jest.spyOn(Locations, 'getLocationByCity').mockResolvedValue({error});
       jest.spyOn(Locations, 'getLocationByZip');
@@ -156,12 +154,13 @@ describe('Locations.js unit tests', () => {
       });
     });
 
-    it('it returns an object of invalid city locations and api errors', async () => {
+    it('it returns an object of unknown city locations and api errors', async () => {
+      const invalidCity2 = data.invalidPlaces.cities[1];
       const locations = [
         { type: 'city', location: invalidCity.input },
         { type: 'city', location: invalidCity2.input }
       ];
-      const error1 = `No location found for ${invalidCity.input}`;
+      const error1 = `${outputPrefixes.unknownLocation} ${invalidCity}`;
       const error2 = 'API error';
 
       jest.spyOn(Locations, 'getLocationByCity').mockResolvedValueOnce({error: error1});
@@ -184,11 +183,11 @@ describe('Locations.js unit tests', () => {
       });
     });
 
-    it('it returns an object of a single invalid zipcode location', async () => {
+    it('it returns an object of a single unknown zipcode location', async () => {
       const locations = [
         { type: 'zipcode', location: invalidZipcode.input }
       ];
-      const error = `No location found for ${invalidZipcode.input}`;
+      const error = `${outputPrefixes.unknownLocation} ${invalidZipcode}`;
 
       jest.spyOn(Locations, 'getLocationByZip').mockResolvedValue({error});
       jest.spyOn(Locations, 'getLocationByCity');
@@ -208,11 +207,12 @@ describe('Locations.js unit tests', () => {
     });
 
     it('it returns an object of invalid zipcode locations and api errors', async () => {
+      const invalidZipcode2 = data.invalidPlaces.zipcodes[1];
       const locations = [
         { type: 'zipcode', location: invalidZipcode.input },
         { type: 'zipcode', location: invalidZipcode2.input }
       ];
-      const error1 = `No location found for ${invalidZipcode.input}`;
+      const error1 = `${outputPrefixes.unknownLocation} ${invalidZipcode}`;
       const error2 = 'API error';
 
       jest.spyOn(Locations, 'getLocationByZip').mockResolvedValueOnce({error: error1});
@@ -237,7 +237,7 @@ describe('Locations.js unit tests', () => {
 
     it('it returns an object of a single invalid format', async () => {
       const locations = [
-        { type: 'invalid', location: invalidFormat.input }
+        { type: 'invalid', location: invalidFormat }
       ];
 
       jest.spyOn(Locations, 'getLocationByZip');
@@ -255,9 +255,10 @@ describe('Locations.js unit tests', () => {
     });
 
     it('it returns an object of invalid formats', async () => {
+      const invalidFormat2 = data.invalidFormats[1];
       const locations = [
-        { type: 'invalid', location: invalidFormat.input },
-        { type: 'invalid', location: invalidFormat2.input }
+        { type: 'invalid', location: invalidFormat },
+        { type: 'invalid', location: invalidFormat2 }
       ];
 
       jest.spyOn(Locations, 'getLocationByZip');
@@ -279,16 +280,17 @@ describe('Locations.js unit tests', () => {
         { type: 'city', location: city.input },
         { type: 'zipcode', location: zipcode.input },
         { type: 'city', location: invalidCity.input },
-        { type: 'zipcode', location: invalidZipcode.input },
-        { type: 'invalid', location: invalidFormat.input}
+        { type: 'zipcode', location: invalidZipcode },
+        { type: 'invalid', location: invalidFormat}
       ];
 
-      const errorMessage = 'No location found for';
+      const error1 = `${outputPrefixes.unknownLocation} ${invalidCity.input}`;
+      const error2 = `${outputPrefixes.unknownLocation} ${invalidZipcode.input}`;
 
       jest.spyOn(Locations, 'getLocationByCity').mockResolvedValueOnce(city.outputObject);
-      jest.spyOn(Locations, 'getLocationByCity').mockResolvedValueOnce({error: `${errorMessage} ${invalidCity.input}`});
+      jest.spyOn(Locations, 'getLocationByCity').mockResolvedValueOnce({error: error1});
       jest.spyOn(Locations, 'getLocationByZip').mockResolvedValueOnce(zipcode.outputObject);
-      jest.spyOn(Locations, 'getLocationByZip').mockResolvedValueOnce({error: `${errorMessage} ${invalidZipcode.input}`});
+      jest.spyOn(Locations, 'getLocationByZip').mockResolvedValueOnce({error: error2});
 
       const result = await Locations.getLocations(locations, API_KEY);
 
@@ -301,8 +303,8 @@ describe('Locations.js unit tests', () => {
         zipcodes: [{...locations[1], data: zipcode.outputObject}],
         errors: [
           {...locations[4]},
-          {...locations[2], data: {error: `${errorMessage} ${invalidCity.input}`}},
-          {...locations[3], data: {error: `${errorMessage} ${invalidZipcode.input}`}}
+          {...locations[2], data: {error: error1}},
+          {...locations[3], data: {error: error2}}
         ]
       });
     });

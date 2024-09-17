@@ -8,14 +8,15 @@ beforeEach(() => {
 
 describe('cli.js unit tests', () => {
   describe('createProgram()', () => {
-    it('has the proper options', () => {
+    const locations = ['Baltimore, MD', '39532'];
+    it('it has the proper options', () => {
       const expectedOptions = ['-V, --version', '-l, --locations <locations...>', '-k, --key <apikey>'];
 
       expect(program.options.map(option => option.flags)).toEqual(expectedOptions);
     });
 
     it('it sets the opts properly', () => {
-      const opts = { locations: ['Baltimore, MD', '39532'], key: 'fakeApiKey' };
+      const opts = { locations, key: 'fakeApiKey' };
       const args = ['node', './bin/index.js', '--locations', opts.locations[0], opts.locations[1], '--key', opts.key];
       
       program.parse(args);
@@ -25,7 +26,7 @@ describe('cli.js unit tests', () => {
     });
 
     it(`it doesn't require an api key option`, () => {
-      const opts = { locations: ['Baltimore, MD', '39532'] };
+      const opts = { locations };
       const args = ['node', './bin/index.js', '--locations', opts.locations[0], opts.locations[1]];
       
       program.parse(args);
