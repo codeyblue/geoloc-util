@@ -1,6 +1,6 @@
 # Geolocation CLI Utility
 
-This is a CLI utility using OpenWeather API to fetch and return geocoding using "<city>, <state>" or "<zipcode>".
+This is a CLI utility, developed on node 20.17, using OpenWeather API to fetch and return geocoding using "<city>, <state>" or "<zipcode>".
 
 ## Setup
 
@@ -22,7 +22,7 @@ npm install geoloc-util
 ```
 
 3. Add your API key to a `.env` file in the root directory. This is required to run the test, but not required to run the tool as long as you pass in a key.
-``` title=".env"
+```bash title=".env"
 OW_API_KEY = [APIKey]
 ```
 
