@@ -54,7 +54,7 @@ describe('Functional Tests', () => {
         if (fs.existsSync(pathToEnv)) {
           makeEnvFile = true;
           const data = fs.readFileSync(pathToEnv).toString();
-          const lookupString = 'API_KEY = ';
+          const lookupString = 'OW_API_KEY = ';
           API_KEY = data.substring(data.indexOf(lookupString)+lookupString.length);
           fs.unlink(pathToEnv, (err) => {
             if (err) {
@@ -68,7 +68,7 @@ describe('Functional Tests', () => {
       afterAll(() => {
         if (makeEnvFile && API_KEY) {
           const pathToEnv = getEnvPath();
-          const content = `API_KEY = ${API_KEY}`;
+          const content = `OW_API_KEY = ${API_KEY}`;
           fs.writeFile(pathToEnv, content, err => {
             if (err) {
               console.error(err);

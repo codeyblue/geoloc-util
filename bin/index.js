@@ -15,7 +15,7 @@ if (program.opts().locations.length <= 0 || (program.opts().locations.length == 
   throw Error('Locations cannot be empty.');
 }
 
-const API_KEY = program.opts().key ? program.opts().key : process.env.API_KEY;
+const API_KEY = program.opts().key ? program.opts().key : process.env.OW_API_KEY;
 if (!API_KEY) {
   throw Error('Missing API_KEY. Set it as an environment variable, in the .env file, or pass it in using -k.');
 }

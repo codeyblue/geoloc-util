@@ -14,6 +14,7 @@ beforeEach(() => {
 
 
 describe('Integration Tests', () => {
+  const API_KEY = process.env.OW_API_KEY;
   const city = data.validPlaces.cities[0];
   const invalidCity = data.invalidPlaces.cities[0];
   const zipcode = data.validPlaces.zipcodes[0];
@@ -22,19 +23,19 @@ describe('Integration Tests', () => {
 
   describe('getLocationByCity()', () => {
     it('it fetches a valid city', async () => {
-      const result = await Locations.getLocationByCity(city.input, process.env.API_KEY);
+      const result = await Locations.getLocationByCity(city.input, API_KEY);
 
       expect(result).toEqual(city.outputObject);
     });
 
     it('it returns an error for an invalid city state format', async () => {
-      const result = await Locations.getLocationByCity(invalidFormat, process.env.API_KEY);
+      const result = await Locations.getLocationByCity(invalidFormat, API_KEY);
 
       expect(result).toEqual({ error: 'Format incorrect, city and state are both required' });
     });
 
     it('it returns an error for an unknown city', async () => {
-      const result = await Locations.getLocationByCity(invalidCity, process.env.API_KEY);
+      const result = await Locations.getLocationByCity(invalidCity, API_KEY);
 
       expect(result).toEqual({ error: `${outputPrefixes.unknownLocation} ${invalidCity}`});
     });
@@ -48,13 +49,13 @@ describe('Integration Tests', () => {
 
   describe('getLocationByZip()', () => {
     it('it fetches a valid zipcode with getLocationByZip()', async () => {
-      const result = await Locations.getLocationByZip(zipcode.input, process.env.API_KEY);
+      const result = await Locations.getLocationByZip(zipcode.input, API_KEY);
 
       expect(result).toEqual(zipcode.outputObject);
     });
 
     it('it returns an error for an unknown zipcode', async () => {
-      const result = await Locations.getLocationByZip(invalidZipcode, process.env.API_KEY);
+      const result = await Locations.getLocationByZip(invalidZipcode, API_KEY);
 
       expect(result).toEqual({ error: `${outputPrefixes.unknownLocation} ${invalidZipcode}`});
     });
@@ -70,7 +71,7 @@ describe('Integration Tests', () => {
     it('it returns an object with a valid city', async () => {
       jest.spyOn(Locations, 'getLocationByCity');
 
-      const result = await Locations.getLocations([{type: 'city', location: city.input}], process.env.API_KEY);
+      const result = await Locations.getLocations([{type: 'city', location: city.input}], API_KEY);
 
       expect(Locations.getLocationByCity).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
@@ -83,7 +84,7 @@ describe('Integration Tests', () => {
     it('it returns an object with a valid zipcode', async () => {
       jest.spyOn(Locations, 'getLocationByZip');
 
-      const result = await Locations.getLocations([{type: 'zipcode', location: zipcode.input}], process.env.API_KEY);
+      const result = await Locations.getLocations([{type: 'zipcode', location: zipcode.input}], API_KEY);
 
       expect(Locations.getLocationByZip).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
@@ -97,7 +98,7 @@ describe('Integration Tests', () => {
       jest.spyOn(Locations, 'getLocationByCity');
       jest.spyOn(Locations, 'getLocationByZip');
 
-      const result = await Locations.getLocations([{type: 'invalid', location: invalidFormat}], process.env.API_KEY);
+      const result = await Locations.getLocations([{type: 'invalid', location: invalidFormat}], API_KEY);
 
       expect(Locations.getLocationByCity).toHaveBeenCalledTimes(0);
       expect(Locations.getLocationByZip).toHaveBeenCalledTimes(0);
@@ -111,7 +112,7 @@ describe('Integration Tests', () => {
     it('it returns an object with an unknown city error', async () => {
       jest.spyOn(Locations, 'getLocationByCity');
 
-      const result = await Locations.getLocations([{type: 'city', location: invalidCity}], process.env.API_KEY);
+      const result = await Locations.getLocations([{type: 'city', location: invalidCity}], API_KEY);
 
       expect(Locations.getLocationByCity).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
@@ -124,7 +125,7 @@ describe('Integration Tests', () => {
     it('it returns an object with an unknown zipcode error', async () => {
       jest.spyOn(Locations, 'getLocationByZip');
 
-      const result = await Locations.getLocations([{type: 'zipcode', location: invalidZipcode}], process.env.API_KEY);
+      const result = await Locations.getLocations([{type: 'zipcode', location: invalidZipcode}], API_KEY);
 
       expect(Locations.getLocationByZip).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
@@ -172,7 +173,7 @@ describe('Integration Tests', () => {
       jest.spyOn(Locations, 'getLocationByCity');
       jest.spyOn(Locations, 'getLocationByZip');
 
-      const result = await Locations.getLocations(input, process.env.API_KEY);
+      const result = await Locations.getLocations(input, API_KEY);
 
       expect(Locations.getLocationByCity).toHaveBeenCalledTimes(2);
       expect(Locations.getLocationByZip).toHaveBeenCalledTimes(2);

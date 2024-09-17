@@ -5,7 +5,7 @@ import data from '../helpers/test.data.json';
 import outputPrefixes from '../../src/utils/output-prefixes.json';
 
 describe('Locations.js unit tests', () => {
-  const API_KEY = 'test-api-key';
+  const API_KEY = 'fakeApiKey';
   const city = data.validPlaces.cities[0];
   const invalidCity = data.invalidPlaces.cities[0];
   const zipcode = data.validPlaces.zipcodes[0];
